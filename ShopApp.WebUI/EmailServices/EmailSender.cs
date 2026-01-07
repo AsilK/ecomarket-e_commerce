@@ -1,35 +1,45 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ShopApp.WebUI.EmailServices
+namespace ShopApp.WebUI.EmailServices;
+
+public interface IEmailSender
 {
-    public class EmailSender : IEmailSender
+    Task SendEmailAsync(string email, string subject, string htmlMessage);
+}
+
+public class EmailSender : IEmailSender
+{
+    private readonly IConfiguration _configuration;
+
+    public EmailSender(IConfiguration configuration)
     {
-        private const string SendGridKey = "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";
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        _configuration = configuration;
+    }
+
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    {
+        // Get API key from configuration or environment variable
+        var sendGridKey = _configuration["SendGrid:ApiKey"] 
+            ?? Environment.GetEnvironmentVariable("SENDGRID_API_KEY") 
+            ?? throw new InvalidOperationException("SendGrid API key is not configured");
+        
+        return Execute(sendGridKey, subject, htmlMessage, email);
+    }
+
+    private static async Task Execute(string sendGridKey, string subject, string message, string email)
+    {
+        var client = new SendGridClient(sendGridKey);
+
+        var msg = new SendGridMessage()
         {
-            return Execute(SendGridKey, subject, htmlMessage, email);
-        }
+            From = new EmailAddress("info@shopapp.com", "Shop App"),
+            Subject = subject,
+            PlainTextContent = message,
+            HtmlContent = message
+        };
 
-        private Task Execute(string sendGridKey, string subject, string message, string email)
-        {
-            var client = new SendGridClient(sendGridKey);
-
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress("info@shopapp.com", "Shop App"),
-                Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
-            };
-
-            msg.AddTo(new EmailAddress(email));
-            return client.SendEmailAsync(msg);
-        }
+        msg.AddTo(new EmailAddress(email));
+        await client.SendEmailAsync(msg);
     }
 }

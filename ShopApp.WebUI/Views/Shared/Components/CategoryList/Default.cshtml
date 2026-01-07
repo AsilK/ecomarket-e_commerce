@@ -1,13 +1,17 @@
 ﻿@model CategoryListViewModel
 
-    <ul class="list-group">
-        @foreach (var item in Model.Categories)
-        {
+<div class="list-group shadow-sm">
+    <a asp-controller="Shop" asp-action="List" class="list-group-item list-group-item-action @(string.IsNullOrEmpty(Model.SelectedCategory) ? "active" : "")">
+        <i class="bi bi-grid-fill me-2"></i> Tüm Kategoriler
+    </a>
+    @foreach (var item in Model.Categories)
+    {
+        var isActive = Model.SelectedCategory == item.Name.ToLower();
         <a asp-controller="Shop"
            asp-action="List"
            asp-route-category="@item.Name.ToLower()"
-           class="list-group-item list-group-item-action @(Model.SelectedCategory==item.Name.ToLower()?"active":"")">
-            @item.Name
+           class="list-group-item list-group-item-action @(isActive ? "active" : "")">
+            <i class="bi @(isActive ? "bi-check-circle-fill" : "bi-tag") me-2"></i> @item.Name
         </a>
-        }
-    </ul>
+    }
+</div>

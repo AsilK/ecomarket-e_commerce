@@ -1,62 +1,84 @@
 ﻿<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="/">SebzePazar</a>
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a href="#" class="nav-link active">Home</a>
-            </li>
-            <li class="nav-item">
-                <a asp-controller="Shop" asp-action="List" class="nav-link">Ürünler</a>
-            </li>
-
-            @if (User.Identity.IsAuthenticated)
-            {
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-shop me-2"></i>SebzePazar
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a asp-controller="Cart" asp-action="Index" class="nav-link">Sepet</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Cart" asp-action="GetOrders" class="nav-link">Siparişler</a>
-                </li>
-                if (User.IsInRole("admin"))
-                {
-                <li class="nav-item">
-                    <a asp-controller="Admin" asp-action="CreateProduct" class="nav-link">Ürün ekle</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Admin" asp-action="ProductList" class="nav-link">Admin Products</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Admin" asp-action="CreateCategory" class="nav-link">Kategori Ekle</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Admin" asp-action="CategoryList" class="nav-link">Admin Kategoriler</a>
-                </li>
-            }
-        }
-        </ul>
-
-        <ul class="navbar-nav ml-auto">
-
-            @if (User.Identity.IsAuthenticated)
-            {
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Manage" class="nav-link">
-                        @User.Identity.Name
+                    <a href="/" class="nav-link active">
+                        <i class="bi bi-house-door"></i> Home
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Logout" class="nav-link">Logout</a>
+                    <a asp-controller="Shop" asp-action="List" class="nav-link">
+                        <i class="bi bi-grid"></i> Ürünler
+                    </a>
                 </li>
-            }
-            else
-            {
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Register" class="nav-link">Register</a>
-                </li>
-            }
-        </ul>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                            <i class="bi bi-cart3"></i> Sepet
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Cart" asp-action="GetOrders" class="nav-link">
+                            <i class="bi bi-list-check"></i> Siparişler
+                        </a>
+                    </li>
+                    
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear"></i> Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Admin" asp-action="CreateProduct" class="dropdown-item">Ürün Ekle</a></li>
+                                <li><a asp-controller="Admin" asp-action="ProductList" class="dropdown-item">Ürünler</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a asp-controller="Admin" asp-action="CreateCategory" class="dropdown-item">Kategori Ekle</a></li>
+                                <li><a asp-controller="Admin" asp-action="CategoryList" class="dropdown-item">Kategoriler</a></li>
+                            </ul>
+                        </li>
+                    }
+                }
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Manage" class="nav-link">
+                            <i class="bi bi-person-circle"></i> @User.Identity.Name
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Logout" class="nav-link">
+                            <i class="bi bi-box-arrow-right"></i> Çıkış
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Login" class="nav-link">
+                            <i class="bi bi-box-arrow-in-right"></i> Giriş
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Register" class="nav-link">
+                            <i class="bi bi-person-plus"></i> Kayıt
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 </nav>

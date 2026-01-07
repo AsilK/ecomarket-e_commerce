@@ -1,20 +1,23 @@
-﻿
-
-<!DOCTYPE html>
-
-<html>
+﻿<!DOCTYPE html>
+<html lang="tr">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Sebze Pazar - Online Organik Sebze ve Meyve Satışı" />
+    
+    <!-- Bootstrap 5 CSS -->
     <link href="/modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="/modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Custom CSS -->
     <link href="/css/style.css" rel="stylesheet" />
+    
     <title>SebzePazar</title>
 </head>
 <body>
     <partial name="_navbar" />
 
-    <div class="container pt-100 mb-5">
-
+    <div class="container pt-5 mb-5">
         @if (TempData["message"] != null)
         {
             <partial name="_resultmessage" model="@(TempData.Get<ResultMessage>("message"))" />
@@ -23,10 +26,13 @@
         @RenderBody()
     </div>
 
+    <!-- Bootstrap 5 Bundle (includes Popper) -->
+    <script src="/modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (for validation) -->
     <script src="/modules/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="/modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    
     @RenderSection("Scripts", false)
-
 </body>
 </html>

@@ -1,67 +1,64 @@
 ﻿using ShopApp.Business.Abstract;
 using ShopApp.DataAccess.Abstract;
 using ShopApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ShopApp.Business.Concrete
+namespace ShopApp.Business.Concrete;
+
+public class CartManager : ICartService
 {
-    public class CartManager : ICartService
+    private readonly ICartDal _cartDal;
+
+    public CartManager(ICartDal cartDal)
     {
-        private ICartDal _cartDal;
-        public CartManager(ICartDal cartDal)
-        {
-            _cartDal = cartDal;
-        }
+        _cartDal = cartDal;
+    }
 
-        public void AddToCart(string userId, int productId, int quantity)
+    public void AddToCart(string userId, int productId, int quantity)
+    {
+        var cart = GetCartByUserId(userId);
+        if (cart != null)
         {
-            var cart = GetCartByUserId(userId);
-            if (cart != null)
+            var index = cart.CartItems.FindIndex(i => i.ProductId == productId);
+
+            if (index < 0)
             {
-                var index = cart.CartItems.FindIndex(i => i.ProductId == productId);
-
-                if (index < 0)
+                cart.CartItems.Add(new CartItem()
                 {
-                    cart.CartItems.Add(new CartItem()
-                    {
-                        ProductId = productId,
-                        Quantity = quantity,
-                        CartId = cart.Id
-                    });
-                }
-                else
-                {
-                    cart.CartItems[index].Quantity += quantity;
-                }
-
-                _cartDal.Update(cart);
+                    ProductId = productId,
+                    Quantity = quantity,
+                    CartId = cart.Id
+                });
             }
-        }
-
-        public void ClearCart(string cartId)
-        {
-            _cartDal.ClearCart(cartId);
-        }
-
-        public void DeleteFromCart(string userId, int productId)
-        {
-            var cart = GetCartByUserId(userId);
-            if (cart != null)
+            else
             {
-                _cartDal.DeleteFromCart(cart.Id, productId);
+                cart.CartItems[index].Quantity += quantity;
             }
-        }
 
-        public Cart GetCartByUserId(string userId)
-        {
-            return _cartDal.GetByUserId(userId);
+            _cartDal.Update(cart);
         }
+    }
 
-        public void InitializeCart(string userId)
+    public void ClearCart(string cartId)
+    {
+        _cartDal.ClearCart(cartId);
+    }
+
+    public void DeleteFromCart(string userId, int productId)
+    {
+        var cart = GetCartByUserId(userId);
+        if (cart != null)
         {
-            _cartDal.Create(new Cart() { UserId = userId });
+            _cartDal.DeleteFromCart(cart.Id, productId);
         }
+    }
+
+    public Cart? GetCartByUserId(string userId)
+    {
+        return _cartDal.GetByUserId(userId);
+    }
+
+    public void InitializeCart(string userId)
+    {
+        _cartDal.Create(new Cart() { UserId = userId });
     }
 }

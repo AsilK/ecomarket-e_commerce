@@ -1,52 +1,50 @@
 ﻿using ShopApp.Business.Abstract;
 using ShopApp.DataAccess.Abstract;
 using ShopApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ShopApp.Business.Concrete
+namespace ShopApp.Business.Concrete;
+
+public class CategoryManager : ICategoryService
 {
-    public class CategoryManager : ICategoryService
+    private readonly ICategoryDal _categoryDal;
+
+    public CategoryManager(ICategoryDal categoryDal)
     {
-        private ICategoryDal _categoryDal;
-        public CategoryManager(ICategoryDal categoryDal)
-        {
-            _categoryDal = categoryDal;
-        }
-        public void Create(Category entity)
-        {
-            _categoryDal.Create(entity);
-        }
+        _categoryDal = categoryDal;
+    }
 
-        public void Delete(Category entity)
-        {
-            _categoryDal.Delete(entity);
-        }
+    public void Create(Category entity)
+    {
+        _categoryDal.Create(entity);
+    }
 
-        public void DeleteFromCategory(int categoryId, int productId)
-        {
-            _categoryDal.DeleteFromCategory(categoryId, productId);
-        }
+    public void Delete(Category entity)
+    {
+        _categoryDal.Delete(entity);
+    }
 
-        public List<Category> GetAll()
-        {
-            return _categoryDal.GetAll();
-        }
+    public void DeleteFromCategory(int categoryId, int productId)
+    {
+        _categoryDal.DeleteFromCategory(categoryId, productId);
+    }
 
-        public Category GetById(int id)
-        {
-            return _categoryDal.GetById(id);
-        }
+    public List<Category> GetAll()
+    {
+        return _categoryDal.GetAll();
+    }
 
-        public Category GetByIdWithProducts(int id)
-        {
-            return _categoryDal.GetByIdWithProducts(id);
-        }
+    public Category? GetById(int id)
+    {
+        return _categoryDal.GetById(id);
+    }
 
-        public void Update(Category entity)
-        {
-            _categoryDal.Update(entity);
-        }
+    public Category? GetByIdWithProducts(int id)
+    {
+        return _categoryDal.GetByIdWithProducts(id);
+    }
+
+    public void Update(Category entity)
+    {
+        _categoryDal.Update(entity);
     }
 }

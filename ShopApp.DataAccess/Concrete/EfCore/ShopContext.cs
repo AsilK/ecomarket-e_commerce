@@ -1,26 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ShopApp.DataAccess.Concrete.EfCore
+namespace ShopApp.DataAccess.Concrete.EfCore;
+
+public class ShopContext : DbContext
 {
-    public class ShopContext:DbContext
-    {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=ShopDb;integrated security=true;");
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+    public ShopContext() { }
 
-            modelBuilder.Entity<ProductCategory>()
-                .HasKey(c => new { c.CategoryId, c.ProductId });
+    public ShopContext(DbContextOptions<ShopContext> options) : base(options) { }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlite("Data Source=ShopAppData.db");
         }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<Order> Orders { get; set; }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ProductCategory>()
+            .HasKey(c => new { c.CategoryId, c.ProductId });
+    }
+
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<Order> Orders => Set<Order>();
 }

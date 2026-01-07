@@ -1,95 +1,97 @@
 ﻿@model CartModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sepetim";
 }
 
-<h1>Shopping Cart</h1>
+<h1 class="display-4 mb-4">Sepetim</h1>
 
-<div class="row mt-5">
-    <div class="col-md-8">
-        <div class="text-left">
-            <h4>Cart Items</h4>
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Sepetteki Ürünler (@Model.CartItems.Count)</h5>
+            </div>
+            
+            <div class="table-responsive">
+                @if (Model.CartItems.Count > 0)
+                {
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 100px;">Ürün</th>
+                                <th>Ürün Adı</th>
+                                <th>Fiyat</th>
+                                <th>Adet</th>
+                                <th>Toplam</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="~/img/@item.ImageUrl" class="img-fluid rounded" style="max-height: 80px;" alt="@item.Name" />
+                                    </td>
+                                    <td class="fw-bold">@item.Name</td>
+                                    <td>@item.Price.ToString("c")</td>
+                                    <td>@item.Quantity</td>
+                                    <td class="fw-bold text-success">@((item.Quantity * item.Price).ToString("c"))</td>
+                                    <td>
+                                        <form asp-controller="Cart" asp-action="DeleteFromCart" method="post">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Sil">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning m-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Sepetinizde ürün bulunmamaktadır!
+                    </div>
+                }
+            </div>
         </div>
-
-        @if (Model.CartItems.Count > 0)
-        {
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.CartItems)
-                    {
-                        <tr>
-                            <td>
-                                <img src="~/img/@item.ImageUrl" width="80" />
-                            </td>
-                            <td>@item.Name</td>
-                            <td>@item.Price.ToString("c")</td>
-                            <td>@item.Quantity</td>
-                            <td>@((item.Quantity * item.Price).ToString("c"))</td>
-                            <td>
-                                <form asp-controller="Cart" asp-action="DeleteFromCart" method="post">
-                                    <input type="hidden" name="productId" value="@item.ProductId" />
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-times fa-fw"></i>
-                                    </button>
-                                </form>
-
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-        }
-        else
-        {
-            <div class="alert alert-warning">
-                No Product in Cart!
-            </div>
-        }
     </div>
-    <div class="col-md-4">
-
+    
+    <div class="col-lg-4">
         @if (Model.CartItems.Count > 0)
         {
-            <div class="text-left">
-                <h4>Cart Summary</h4>
-            </div>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <th>Cart Total</th>
-                        <td>@Model.TotalPrice().ToString("c")</td>
-                    </tr>
-                    <tr>
-                        <th>Shipping</th>
-                        <td>Fee</td>
-                    </tr>
-                    <tr>
-                        <th>Order Total</th>
-                        <td>@Model.TotalPrice().ToString("c")</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="text-center">
-                <a href="/" class="btn btn-primary">
-                    <i class="fa fa-arrow-circle-left fa-fw"></i> Continue Shopping
-                </a>
-                <a href="/checkout" class="btn btn-primary">
-                    Checkout <i class="fa fa-arrow-circle-right fa-fw"></i>
-                </a>
-            </div>
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Sipariş Özeti</h5>
+                    
+                    <ul class="list-group list-group-flush mb-3 bg-transparent">
+                        <li class="list-group-item d-flex justify-content-between bg-transparent px-0">
+                            <span>Sepet Toplamı</span>
+                            <strong>@Model.TotalPrice().ToString("c")</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between bg-transparent px-0">
+                            <span>Kargo</span>
+                            <span class="text-success">Ücretsiz</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between bg-transparent px-0 fw-bold border-top mt-2 pt-2">
+                            <span>Ödenecek Tutar</span>
+                            <span class="fs-5 text-primary">@Model.TotalPrice().ToString("c")</span>
+                        </li>
+                    </ul>
 
+                    <div class="d-grid gap-2">
+                        <a href="/checkout" class="btn btn-primary btn-lg">
+                            Ödemeye Geç <i class="bi bi-arrow-right-circle ms-2"></i>
+                        </a>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left-circle me-2"></i> Alışverişe Devam Et
+                        </a>
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </div>
-

@@ -1,12 +1,9 @@
 ﻿using ShopApp.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ShopApp.Business.Abstract
+namespace ShopApp.Business.Abstract;
+
+public interface IOrderService
 {
-    public interface IOrderService
-    {        void Create(Order entity);
-             List<Order> GetOrders(string userId);
-    }
+    void Create(Order entity);
+    List<Order> GetOrders(string? userId);
 }

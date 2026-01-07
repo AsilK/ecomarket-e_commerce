@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ShopApp.Entities;
 
-namespace ShopApp.Entities
+public class ProductCategory
 {
-    public class ProductCategory
-    {
-        
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-
-
-    }
+    public int CategoryId { get; set; }
+    public Category Category { get; set; } = null!;
+    public int ProductId { get; set; }
+    public Product Product { get; set; } = null!;
 }

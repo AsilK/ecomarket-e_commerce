@@ -1,56 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShopApp.Business.Abstract;
-using ShopApp.Entities;
 using ShopApp.WebUI.Models;
 
-namespace ShopApp.WebUI.Controllers
+namespace ShopApp.WebUI.Controllers;
+
+public class ShopController : Controller
 {
-    public class ShopController : Controller
+    private readonly IProductService _productService;
+
+    public ShopController(IProductService productService)
     {
-        private IProductService _productService;
-        public ShopController(IProductService productService)
+        _productService = productService;
+    }
+
+    public IActionResult Details(int? id)
+    {
+        if (id == null)
         {
-            _productService = productService;
+            return NotFound();
         }
 
-        public IActionResult Details(int? id)
+        var product = _productService.GetProductDetails((int)id);
+        if (product == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Product product = _productService.GetProductDetails((int)id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(new ProductDetailsModel()
-            {
-                Product = product,
-                Categories = product.ProductCategories.Select(i => i.Category).ToList()
-            });
+            return NotFound();
         }
 
-        public IActionResult List(string category, int page = 1)
+        return View(new ProductDetailsModel()
         {
-            const int pageSize = 3;
-            return View(new ProductListModel()
+            Product = product,
+            Categories = product.ProductCategories.Select(i => i.Category).ToList()
+        });
+    }
+
+    public IActionResult List(string? category, int page = 1)
+    {
+        const int pageSize = 3;
+        return View(new ProductListModel()
+        {
+            PageInfo = new PageInfo()
             {
-                PageInfo = new PageInfo()
-                {
-                    TotalItems = _productService.GetCountByCategory(category),
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    CurrentCategory = category,
-
-                },
-                Products = _productService.GetProductsByCategory(category, page, pageSize)
-            }); ;
-
-        }
+                TotalItems = _productService.GetCountByCategory(category ?? string.Empty),
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                CurrentCategory = category,
+            },
+            Products = _productService.GetProductsByCategory(category ?? string.Empty, page, pageSize)
+        });
     }
 }

@@ -1,38 +1,32 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ShopApp.WebUI.Identity
+namespace ShopApp.WebUI.Identity;
+
+public static class SeedIdentity
 {
-    public static class SeedIdentity
+    public static async Task Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
-        public static async Task Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        var username = configuration["Data:AdminUser:username"] ?? "admin";
+        var email = configuration["Data:AdminUser:email"] ?? "admin@shopapp.com";
+        var password = configuration["Data:AdminUser:password"] ?? "Admin_123";
+        var role = configuration["Data:AdminUser:role"] ?? "admin";
+
+        if (await userManager.FindByNameAsync(username) == null)
         {
-            var username = configuration["Data:AdminUser:username"];
-            var email = configuration["Data:AdminUser:email"];
-            var password = configuration["Data:AdminUser:password"];
-            var role = configuration["Data:AdminUser:role"];
+            await roleManager.CreateAsync(new IdentityRole(role));
 
-            if (await userManager.FindByNameAsync(username) == null)
+            var user = new ApplicationUser()
             {
-                await roleManager.CreateAsync(new IdentityRole(role));
+                UserName = username,
+                Email = email,
+                FullName = "Admin User",
+                EmailConfirmed = true
+            };
 
-                var user = new ApplicationUser()
-                {
-                    UserName = username,
-                    Email = email,
-                    FullName = "Admin User",
-                    EmailConfirmed = true
-                };
-
-                var result = await userManager.CreateAsync(user, password);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, role);
-                }
+            var result = await userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, role);
             }
         }
     }

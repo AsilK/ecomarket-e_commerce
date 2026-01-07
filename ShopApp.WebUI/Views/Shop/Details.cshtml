@@ -1,46 +1,50 @@
 ﻿@model ProductDetailsModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Product?.Name;
 }
 
 <div class="row">
-    <div class="col-md-3">
-        <img src="~/img/@Model.Product.ImageUrl" alt="@Model.Product.Name" class="img-fluid" />
+    <div class="col-lg-4 mb-4">
+        <img src="~/img/@Model.Product?.ImageUrl" alt="@Model.Product?.Name" class="img-fluid rounded shadow-sm border" />
     </div>
-    <div class="col-md-9">
-        <h1 class="mb-3">
-            @Model.Product.Name
-        </h1>
+    <div class="col-lg-8">
+        <h1 class="mb-3 display-4">@Model.Product?.Name</h1>
         <hr />
-        @foreach (var category in Model.Categories)
-        {
-            <a href="#" class="btn btn-link p-0 mb-3">@category.Name</a>
-        }
+        
         <div class="mb-3">
-            <h4 class="text-primary mb-3">
-                @Model.Product.Price TL
-            </h4>
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-controller="Shop" asp-action="List" asp-route-category="@category.Name.ToLower()" class="badge bg-secondary text-decoration-none me-2 p-2">
+                    @category.Name
+                </a>
+            }
+        </div>
 
-            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="form-inline">
-                <input type="hidden" name="productId" value="@Model.Product.Id" />
-                <div class="input-group mb-3">
-                    <input type="number" name="quantity" class="form-control" value="1" min="1" step="1" style="width:100px;" />
-                    <div class="input-group-append">
+        <div class="mb-4">
+            <h3 class="text-success mb-3">
+                <i class="bi bi-currency-lira"></i> @(Model.Product?.Price?.ToString("N2"))
+            </h3>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline-block">
+                    <input type="hidden" name="productId" value="@Model.Product?.Id" />
+                    <div class="input-group">
+                        <input type="number" name="quantity" class="form-control" value="1" min="1" step="1" style="width: 80px;" />
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i>Sepete Ekle
+                            <i class="bi bi-cart-plus me-2"></i>Sepete Ekle
                         </button>
                     </div>
-                </div>
-            </form>
-
+                </form>
+            }
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <p class="p-3">
-            @Html.Raw(Model.Product.Description)
-        </p>
+        
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <p class="card-text lead">
+                    @Html.Raw(Model.Product?.Description)
+                </p>
+            </div>
+        </div>
     </div>
 </div>

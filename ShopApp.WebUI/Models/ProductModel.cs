@@ -1,30 +1,24 @@
 ﻿using ShopApp.Entities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ShopApp.WebUI.Models
+namespace ShopApp.WebUI.Models;
+
+public class ProductModel
 {
-    public class ProductModel
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-       // [Required]
-        //[StringLength(60, MinimumLength = 10, ErrorMessage = "Ürün ismi minimum 10 karakter ve maksimum 60 karakter olmalıdır.")]
-        public string Name { get; set; }
-        
-        [Required(ErrorMessage = "image url belirtiniz")]
-        public string ImageUrl { get; set; }
-        [Required(ErrorMessage = "aciklama belirtiniz")]
-        [StringLength(10000, MinimumLength = 20, ErrorMessage = "Ürün açıklaması minimum 20 karakter ve maksimum 100 karakter olmalıdır.")]
-        public string Description { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Fiyat belirtiniz")]
-        [Range(typeof(decimal), "1", "10000", ErrorMessage = "fiyat {1} ve {2} arasında olmalıdır.")]
-        // [Range(1, 10000)]
-        public decimal? Price { get; set; }
-        public List<Category> SelectedCategories { get; set; }
-    }
+    [Required(ErrorMessage = "image url belirtiniz")]
+    public string ImageUrl { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "aciklama belirtiniz")]
+    [StringLength(10000, MinimumLength = 20, ErrorMessage = "Ürün açıklaması minimum 20 karakter ve maksimum 100 karakter olmalıdır.")]
+    public string Description { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Fiyat belirtiniz")]
+    [Range(typeof(decimal), "1", "10000", ErrorMessage = "fiyat {1} ve {2} arasında olmalıdır.")]
+    public decimal? Price { get; set; }
+
+    public List<Category> SelectedCategories { get; set; } = new();
 }

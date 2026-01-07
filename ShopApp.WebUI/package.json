@@ -1,14 +1,14 @@
 {
   "version": "1.0.0",
-  "name": "asp.net",
+  "name": "shopapp",
   "private": true,
-  "devDependencies": {
-  },
   "dependencies": {
-    "bootstrap": "4.4.1",
-    "jquery": "3.4.1",
-    "jquery-validation": "1.19.1",
-    "jquery-validation-unobtrusive": "3.2.11",
-      "ckeditor": "4.11.4"
+    "bootstrap": "^5.3.2",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap-icons": "^1.11.2",
+    "jquery": "^3.7.1",
+    "jquery-validation": "^1.19.5",
+    "jquery-validation-unobtrusive": "^4.0.0",
+    "ckeditor4": "^4.22.1"
   }
 }
