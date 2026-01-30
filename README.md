@@ -1,42 +1,82 @@
-# ShopApp
+# EcoMarket E-Ticaret
 
-A full-featured e-commerce application built with ASP.NET Core MVC.
+Katmanlı mimari ile gelistirilmis, ASP.NET Core MVC tabanli bir e-ticaret uygulamasi.
 
-## Technologies
-- .NET 8 (LTS)
-- Entity Framework Core 8.0
-- SQLite
-- Bootstrap 5
-- ASP.NET Core Identity
+## Proje Hakkinda
 
-## Getting Started
+Bu proje, kullanicilarin urun arama, sepete ekleme ve siparis verebilmesini saglayan bir online market uygulamasidir. Admin paneli uzerinden urun ve kategori yonetimi yapilabilir.
 
-Follow these steps to run the project locally.
+### Temel Ozellikler
 
-### Prerequisites
+- Urun listeleme ve kategori bazli filtreleme
+- Kullanici kayit ve giris islemleri
+- Sepet yonetimi
+- Siparis olusturma ve takibi
+- Admin paneli (urun/kategori CRUD islemleri)
+- Iyzico odeme entegrasyonu
+
+## Teknoloji Stack
+
+| Katman | Teknoloji |
+|--------|-----------|
+| Framework | .NET 8, ASP.NET Core MVC |
+| ORM | Entity Framework Core 8 |
+| Veritabani | SQLite |
+| Kimlik Dogrulama | ASP.NET Core Identity |
+| Frontend | Bootstrap 5, jQuery |
+| Odeme | Iyzico API |
+
+## Proje Yapisi
+
+```
+ShopApp.sln
+├── ShopApp.Entities        # Domain modelleri
+├── ShopApp.DataAccess      # Repository katmani, EF Core
+├── ShopApp.Business        # Is mantigi, servisler
+└── ShopApp.WebUI           # MVC Controllers, Views
+```
+
+Mimari detaylar icin [ARCHITECTURE.md](ARCHITECTURE.md) dosyasina bakiniz.
+
+## Kurulum
+
+### Gereksinimler
+
 - .NET 8 SDK
 
-### Installation
+### Adimlar
 
-1.  Clone the repository or download the source.
-2.  Open a terminal in the project root.
-3.  Initialize the database (SQLite):
+1. Projeyi klonlayin:
+```bash
+git clone https://github.com/AsilK/E-ticaret.git
+cd E-ticaret
+```
 
-    ```bash
-    dotnet ef database update --project ShopApp.WebUI --context ApplicationIdentityDbContext
-    dotnet ef database update --project ShopApp.DataAccess --startup-project ShopApp.WebUI --context ShopContext
-    ```
+2. Veritabanini olusturun:
+```bash
+dotnet ef database update --project ShopApp.WebUI --context ApplicationIdentityDbContext
+dotnet ef database update --project ShopApp.DataAccess --startup-project ShopApp.WebUI --context ShopContext
+```
 
-### Running the Application
-
-Navigate to the WebUI directory and run the project:
-
+3. Uygulamayi calistirin:
 ```bash
 cd ShopApp.WebUI
 dotnet run
 ```
 
-The application will be available at **http://localhost:5000**.
+Uygulama `http://localhost:5000` adresinde calisacaktir.
 
-## Configuration
-The project uses SQLite by default (`ShopAppIdentity.db` and `ShopAppData.db`). No additional database installation is required.
+## Yapilandirma
+
+Proje varsayilan olarak SQLite kullanir. Veritabani dosyalari (`ShopAppIdentity.db`, `ShopAppData.db`) otomatik olusturulur.
+
+Odeme ve e-posta servisleri icin `appsettings.json` dosyasindaki API anahtarlarini guncellemeniz gerekir. Gelistirme ortaminda User Secrets kullanmaniz onerilir:
+
+```bash
+dotnet user-secrets set "Iyzico:ApiKey" "your-api-key" --project ShopApp.WebUI
+dotnet user-secrets set "SendGrid:ApiKey" "your-api-key" --project ShopApp.WebUI
+```
+
+## Lisans
+
+MIT
