@@ -7,6 +7,7 @@ using ShopApp.DataAccess.Abstract;
 using ShopApp.DataAccess.Concrete.EfCore;
 using ShopApp.WebUI.EmailServices;
 using ShopApp.WebUI.Identity;
+using ShopApp.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,26 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.Name = ".ShopApp.Security.Cookie";
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
+
+// Caching - Redis or Memory
+var redisConnection = builder.Configuration.GetValue<string>("Redis:ConnectionString");
+if (!string.IsNullOrEmpty(redisConnection))
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisConnection;
+        options.InstanceName = "ShopApp_";
+    });
+    builder.Services.AddSingleton<ICacheService, RedisCacheService>();
+}
+else
+{
+    builder.Services.AddMemoryCache();
+    builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
+}
+
+// Health Checks
+builder.Services.AddHealthChecks();
 
 // Data Access Layer
 builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
@@ -162,5 +183,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHealthChecks("/health");
 
 app.Run();

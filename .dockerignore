@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/.git
+**/.vs
+**/.vscode
+**/node_modules/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+*.log
+*.txt
+.gitignore
+.gitattributes
+README.md
+ARCHITECTURE.md
+TECHNOLOGIES.md
+LICENSE

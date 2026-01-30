@@ -1,6 +1,6 @@
 # EcoMarket E-Ticaret
 
-Katmanlı mimari ile gelistirilmis, ASP.NET Core MVC tabanli bir e-ticaret uygulamasi.
+Katmanli mimari ile gelistirilmis, ASP.NET Core MVC tabanli bir e-ticaret uygulamasi.
 
 ## Proje Hakkinda
 
@@ -14,6 +14,8 @@ Bu proje, kullanicilarin urun arama, sepete ekleme ve siparis verebilmesini sagl
 - Siparis olusturma ve takibi
 - Admin paneli (urun/kategori CRUD islemleri)
 - Iyzico odeme entegrasyonu
+- Redis ile distributed caching
+- Docker ile container destegi
 
 ## Teknoloji Stack
 
@@ -22,9 +24,12 @@ Bu proje, kullanicilarin urun arama, sepete ekleme ve siparis verebilmesini sagl
 | Framework | .NET 8, ASP.NET Core MVC |
 | ORM | Entity Framework Core 8 |
 | Veritabani | SQLite |
+| Cache | Redis / In-Memory |
 | Kimlik Dogrulama | ASP.NET Core Identity |
 | Frontend | Bootstrap 5, jQuery |
 | Odeme | Iyzico API |
+| Container | Docker |
+| CI/CD | GitHub Actions |
 
 ## Proje Yapisi
 
@@ -33,7 +38,8 @@ ShopApp.sln
 ├── ShopApp.Entities        # Domain modelleri
 ├── ShopApp.DataAccess      # Repository katmani, EF Core
 ├── ShopApp.Business        # Is mantigi, servisler
-└── ShopApp.WebUI           # MVC Controllers, Views
+├── ShopApp.WebUI           # MVC Controllers, Views
+└── ShopApp.Tests           # Unit testler (xUnit, Moq)
 ```
 
 Mimari detaylar icin [ARCHITECTURE.md](ARCHITECTURE.md) dosyasina bakiniz.
@@ -43,8 +49,9 @@ Mimari detaylar icin [ARCHITECTURE.md](ARCHITECTURE.md) dosyasina bakiniz.
 ### Gereksinimler
 
 - .NET 8 SDK
+- Docker (istege bagli)
 
-### Adimlar
+### Yerel Calistirma
 
 1. Projeyi klonlayin:
 ```bash
@@ -66,16 +73,47 @@ dotnet run
 
 Uygulama `http://localhost:5000` adresinde calisacaktir.
 
+### Docker ile Calistirma
+
+```bash
+docker-compose up -d
+```
+
+Uygulama `http://localhost:5000` adresinde calisacaktir.
+
+## Testler
+
+Unit testleri calistirmak icin:
+
+```bash
+dotnet test
+```
+
 ## Yapilandirma
 
-Proje varsayilan olarak SQLite kullanir. Veritabani dosyalari (`ShopAppIdentity.db`, `ShopAppData.db`) otomatik olusturulur.
+Proje varsayilan olarak SQLite ve in-memory cache kullanir. Redis kullanmak icin `appsettings.json` dosyasina asagidaki ayari ekleyin:
 
-Odeme ve e-posta servisleri icin `appsettings.json` dosyasindaki API anahtarlarini guncellemeniz gerekir. Gelistirme ortaminda User Secrets kullanmaniz onerilir:
+```json
+{
+  "Redis": {
+    "ConnectionString": "localhost:6379"
+  }
+}
+```
+
+Odeme ve e-posta servisleri icin User Secrets kullanin:
 
 ```bash
 dotnet user-secrets set "Iyzico:ApiKey" "your-api-key" --project ShopApp.WebUI
 dotnet user-secrets set "SendGrid:ApiKey" "your-api-key" --project ShopApp.WebUI
 ```
+
+## CI/CD
+
+GitHub Actions ile her push'ta:
+- Build kontrolu
+- Unit test calistirma
+- Docker image olusturma
 
 ## Lisans
 

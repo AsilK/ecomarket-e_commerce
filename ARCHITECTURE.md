@@ -124,9 +124,38 @@ OrderItem ────► Order ────► User
 - CSRF koruması varsayılan olarak aktiftir
 - Hassas veriler (API anahtarlari) User Secrets ile yonetilir
 
+## Caching Stratejisi
+
+Uygulama iki cache implementasyonu destekler:
+
+1. **In-Memory Cache** - Gelistirme ortami icin varsayilan
+2. **Redis** - Uretim ortami icin distributed cache
+
+Cache kullanimi:
+- Urun listesi: 5 dakika TTL
+- Kategori listesi: 10 dakika TTL
+- Cache invalidation: CRUD islemlerinde otomatik temizleme
+
+## Docker
+
+Multi-stage Dockerfile ile optimize edilmis container:
+
+```
+Build Stage (SDK) -> Publish Stage -> Runtime Stage (ASP.NET)
+```
+
+docker-compose.yml ile tum servisler (app, redis) bir arada calistirilabilir.
+
+## Test Stratejisi
+
+- Unit testler: xUnit + Moq
+- Servis katmani testleri
+- Validation testleri
+- Repository mock'lama ile izole testler
+
 ## Gelecek Iyilestirmeler
 
-- Unit test coverage artirimi
-- Docker desteği
-- Redis ile caching
+- Integration test coverage
 - API katmani (Web API)
+- Kubernetes deployment
+
